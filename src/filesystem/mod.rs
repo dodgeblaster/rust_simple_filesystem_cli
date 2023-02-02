@@ -18,22 +18,22 @@ pub fn write_file(file_name: &str, content: &str) -> Result<(), std::io::Error> 
 
 pub fn list_directory(path: &str) -> Result<String, std::io::Error> {
     let path = Path::new(path);
-    if path.exists() {
-        let mut result = String::new();
-        for entry in read_dir(path).unwrap() {
-            let entry_value = entry.unwrap();
-            let is_dir = entry_value.file_type().unwrap().is_dir();
-            let file_type = if is_dir { "dir" } else { "file" };
-
-            // cant wait to learn a more elegant way to do this...
-            result.push_str(file_type);
-            result.push_str("\t");
-            result.push_str(entry_value.path().to_str().unwrap());
-            result.push_str("\n")
-        }
- 
-        Ok(result)
-    } else {
-        Ok("Path does not exist".to_string())
+    if !path.exists() {
+       return Ok("Path does not exist".to_string())
     }
+
+    let mut result = String::new();
+    for entry in read_dir(path).unwrap() {
+        let entry_value = entry.unwrap();
+        let is_dir = entry_value.file_type().unwrap().is_dir();
+        let file_type = if is_dir { "dir" } else { "file" };
+
+        // cant wait to learn a more elegant way to do this...
+        result.push_str(file_type);
+        result.push_str("\t");
+        result.push_str(entry_value.path().to_str().unwrap());
+        result.push_str("\n")
+    }
+
+    Ok(result)
 }
